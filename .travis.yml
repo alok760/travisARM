@@ -18,6 +18,10 @@ deploy:
   provider: releases
   api_key:
     secure: dXI5g4gUQt0bW66EVHyZHSANHCIJIxXtFM5JyJyhfcZ3cr14fTavDrK473sYlIl11wgAuWfCGHssm+MLZzEd/YSZJsE4Y3CMGD8bmRZX7EWEQAwJ3YInv9g6rymkYpES47CentFsbd5ihht0Ugn/w+QhMJQi45e0k3ce1Y7IAE7o9l20yGIckchT1pAfxupAPLmWv+MJsWbdRDVcZKctFFmti3OaBvVzCvPdfgZtD4VyZ04m3RZVqyNrlkBe8uQXSXKJL/SHok/Po6w8ElVBXMe0fL56i3XfBVSXTpQjuEV8fO6KbWYYo9t5OXSoe269Ys5m2jBodM6BWZr9piFjICXvw/B4WjzqgdMxeUOPRSjCYeL2DCHcUtukIjNQKU6zZEgG9A78HPkRknKCNDSlaqP3CVEapCiP1jC4yCkKHLEgHfY9X3hrYxYRD8bS+WPGH81iTE4SJVXb7Uxgp4lCEIS4VwefknPTNZL5IudQMXw0FnlyvwMdhZj7k6WBfRS5xWreR0FrnE1wlKQ1rQLE/4H/N/1U1NkMg9fwh5sXgVfUb2q28CM2oQe1flpkl9cWTIcwVEW0yCr8hxY537o+zbOMvszeX9C/+71Qnp3L+vpdUK7GsOU1TBtH7sQIArDy9GqEZuIJBo89X7TvW9OhC+J5nVqHgwii9LwjwwEDYUo=
-  file: rpizw-rover.img.xz
+  file:
+  - rpizw-rover.img.xz
+  - rpizw-rover.img.zip
+  skip_cleanup: true
   on:
     repo: alok760/travisARM
+    tags: true
