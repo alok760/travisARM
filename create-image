@@ -13,8 +13,8 @@ fi
 # Some useful constants
 mount="mnt" # Local directory to mount the image (automatically created/delete as needed)
 script="setup" # Local setup script to run inside the image
-rpi_tar="ArchLinuxARM-rpi-latest.tar.gz" # Raspberry pi 1 image others can be found on https://archlinuxarm.org/
-rpi_url="http://archlinuxarm.org/os/${rpi_tar}"
+rpi_tar="raspbian_lite-2018-11-15/2018-11-13-raspbian-stretch-lite.zip" # Raspberry pi 1 image others can be found on https://archlinuxarm.org/
+rpi_url="http://director.downloads.raspberrypi.org/raspbian_lite/images/${rpi_tar}"
 
 # Grab the first two arguments, using the defaults if not set
 # This allows running the command as any of
@@ -61,7 +61,7 @@ mount "${rootdev}" "${mount}"
 mount "${bootdev}" "${mount}/boot"
 
 # Install archlinuxarm to the image
-tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header keyword")
+unzip "${rpi_tar}" -d ${mount} 2> >(grep -v "Ignoring unknown extended header keyword")
 
 # Copy our installation script to the mount so it can be run in the chroot
 install -Dm755 "${script}" "${mount}/tmp/${script}"
