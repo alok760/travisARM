@@ -64,9 +64,9 @@ trap cleanup EXIT
 
 # Install archlinuxarm to the image
 #tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header keyword")
-losetup -fP --show 2018-11-13-raspbian-stretch-lite.img
-mount /dev/loop1p2 "${mount}"
-mount /dev/loop1p1 "${mount}/boot"
+losetup -f --show 2018-11-13-raspbian-stretch-lite.img
+mount /dev/loop0p2 "${mount}"
+mount /dev/loop0p1 "${mount}/boot"
 # Copy our installation script to the mount so it can be run in the chroot
 install -Dm755 "${script}" "${mount}/tmp/${script}"
 
