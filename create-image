@@ -9,15 +9,13 @@ if [[ $EUID -ne 0 ]]; then
     echo "This script must be run as root" 1>&2
     exit 1
 fi
-mkdir mnt
+
 # Some useful constants
 mount="mnt" # Local directory to mount the image (automatically created/delete as needed)
 script="setup" # Local setup script to run inside the image
 rpi_tar="ArchLinuxARM-rpi-latest.tar.gz" # Raspberry pi 1 image others can be found on https://archlinuxarm.org/
 rpi_url="http://archlinuxarm.org/os/${rpi_tar}"
 
-wget http://director.downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2018-11-15/2018-11-13-raspbian-stretch-lite.zip
-unzip 2018-11-13-raspbian-stretch-lite.zip
 # Grab the first two arguments, using the defaults if not set
 # This allows running the command as any of
 #   ./create-image                 # to use the defaults
@@ -43,30 +41,28 @@ cleanup() {
 trap cleanup EXIT
 
 # Download archlinux arm only if we have not already done so
-# [ ! -f "${rpi_tar}" ] && wget "${rpi_url}"
+[ ! -f "${rpi_tar}" ] && wget "${rpi_url}"
 
 # Create, partition and format the image
-#fallocate -l "${size}" "${image}"
-#loopdev=$(losetup --find --show "${image}")
-#parted --script "${loopdev}" mklabel msdos
-#parted --script "${loopdev}" mkpart primary fat32 0% 100M
-#parted --script "${loopdev}" mkpart primary ext4 100M 100%
-#bootdev=$(ls "${loopdev}"*1)
-#rootdev=$(ls "${loopdev}"*2)
-#mkfs.vfat -F32 ${bootdev}
-#mkfs.ext4 -F ${rootdev}
+fallocate -l "${size}" "${image}"
+loopdev=$(losetup --find --show "${image}")
+parted --script "${loopdev}" mklabel msdos
+parted --script "${loopdev}" mkpart primary fat32 0% 100M
+parted --script "${loopdev}" mkpart primary ext4 100M 100%
+bootdev=$(ls "${loopdev}"*1)
+rootdev=$(ls "${loopdev}"*2)
+mkfs.vfat -F32 ${bootdev}
+mkfs.ext4 -F ${rootdev}
 
 # Mount the image
-#[ ! -d "${mount}" ] && mkdir "${mount}"
-#mount "${rootdev}" "${mount}"
-#[ ! -d "${mount}/boot" ] && mkdir "${mount}/boot"
-#mount "${bootdev}" "${mount}/boot"
+[ ! -d "${mount}" ] && mkdir "${mount}"
+mount "${rootdev}" "${mount}"
+[ ! -d "${mount}/boot" ] && mkdir "${mount}/boot"
+mount "${bootdev}" "${mount}/boot"
 
 # Install archlinuxarm to the image
-#tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header keyword")
-losetup -f --show 2018-11-13-raspbian-stretch-lite.img
-mount /dev/loop0p2 "${mount}"
-mount /dev/loop0p1 "${mount}/boot"
+tar -xpf "${rpi_tar}" -C ${mount} 2> >(grep -v "Ignoring unknown extended header keyword")
+
 # Copy our installation script to the mount so it can be run in the chroot
 install -Dm755 "${script}" "${mount}/tmp/${script}"
 
@@ -77,6 +73,6 @@ mount -o bind /dev ${mount}/dev
 rm ${mount}/etc/resolv.conf
 cp /etc/resolv.conf ${mount}/etc/resolv.conf
 cp /usr/bin/qemu-arm-static ${mount}/usr/bin/
-cat test.txt
+
 # Run the setup script inside the chroot
 chroot ${mount}  "/tmp/${script}"
